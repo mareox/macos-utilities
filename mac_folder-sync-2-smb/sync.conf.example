@@ -1,0 +1,40 @@
+# Folder Sync Configuration File
+# Copy this file to sync.conf and customize
+
+# Source directory (local folder to sync FROM)
+SOURCE_DIR="/path/to/local/folder"
+
+# Destination directory (SMB mount point or remote path)
+DEST_DIR="/path/to/smb/mount"
+
+# Sync mode: "watch" for real-time change detection, "interval" for scheduled sync
+SYNC_MODE="watch"
+
+# Interval in seconds (only used if SYNC_MODE="interval")
+SYNC_INTERVAL=30
+
+# Sync delay in seconds (for watch mode - time to wait after detecting changes before syncing)
+# This allows batching multiple rapid changes into a single sync operation
+SYNC_DELAY=60
+
+# Two-way sync: Files are synced in both directions, newer file always wins
+# Deleted files are NOT propagated - they are moved to .trash instead
+
+# Enable trash for deleted files (yes/no)
+# When enabled, deleted files are moved to .trash instead of being permanently removed
+TRASH_ENABLED="yes"
+
+# Maximum age for trash files in days (default: 60)
+# Files in .trash older than this will be automatically deleted
+TRASH_MAX_AGE_DAYS=60
+
+# Exclude patterns (space-separated, will be added as --exclude for each)
+# Example: ".git .DS_Store *.tmp node_modules"
+# Note: .trash directories are automatically excluded
+EXCLUDE_PATTERNS=".git .DS_Store Thumbs.db"
+
+# Enable notifications (requires notify-send on Linux)
+ENABLE_NOTIFICATIONS="yes"
+
+# Log file location (leave empty to disable logging)
+LOG_FILE="$(pwd)/.folder-sync.log"

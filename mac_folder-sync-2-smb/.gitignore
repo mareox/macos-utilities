@@ -1,0 +1,11 @@
+# Ignore actual config file (contains user paths)
+sync.conf
+
+# Keep the example config
+!sync.conf.example
+
+# Ignore log files
+*.log
+
+# Ignore PID file from control script
+.folder-sync.pid
