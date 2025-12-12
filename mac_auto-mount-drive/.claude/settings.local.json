@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(chmod:*)",
+      "Bash(cat:*)",
+      "Bash(./install.sh:*)",
+      "Bash(launchctl list:*)",
+      "Bash(~/.smb_credentials)",
+      "Bash(launchctl unload:*)",
+      "Bash(launchctl load:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
