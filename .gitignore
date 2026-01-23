@@ -27,3 +27,43 @@ desktop.ini
 .Trash/
 .Spotlight-V100/
 .fseventsd/
+
+# Bearer tokens and API keys
+*-token.txt
+*-token.json
+*_token.txt
+*_token.json
+*.token
+bearer_token*
+api_token*
+access_token*
+refresh_token*
+auth_token*
+
+# Token files
+tokens.json
+tokens.yaml
+tokens.yml
+.tokens
+
+
+# Credentials
+*.credentials
+*_credentials
+credentials.json
+secrets.json
+secrets.yaml
+secrets.yml
+*_credentials.json
+.credentials
+
+# Keys
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+id_rsa*
+id_ecdsa*
+id_ed25519*
+
