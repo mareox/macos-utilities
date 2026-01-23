@@ -18,9 +18,14 @@ desktop.ini
 # Temporary files
 *.tmp
 *.temp
-*.log
 *.bak
 .cache/
+
+# Logs and captures
+*.log
+*.har
+*.pcap
+*.pcapng
 
 
 # macOS specific
