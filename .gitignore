@@ -72,3 +72,16 @@ id_rsa*
 id_ecdsa*
 id_ed25519*
 
+
+# macOS AppleDouble metadata files
+._*
+
+# OS metadata and editor swap files
+.AppleDouble/
+.LSOverride
+Icon?
+.Trashes/
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.nfs*
