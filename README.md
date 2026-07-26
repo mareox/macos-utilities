@@ -5,6 +5,7 @@ macOS-specific automation scripts and utilities.
 ## Tools
 
 - **Auto Mount Drive** - Automatic drive mounting on login
+- **SMB Remount Shares** - Safe, serialized recovery for the PANW and Documents NAS mounts
 - **Folder Sync to SMB** - Sync local folders to SMB shares
 
 ## Requirements
