@@ -17,13 +17,17 @@ readonly date_bin="${SMB_REMOUNT_DATE_BIN:-/bin/date}"
 
 typeset -a mount_points
 typeset -a share_urls
+typeset -a share_servers
+share_servers=("$server" "$server" "atlas")
 mount_points=(
   "/Volumes/PANW"
   "/Volumes/Documents"
+  "/Volumes/GIT"
 )
 share_urls=(
   "smb://mareox@192.168.10.100/home/MXPC_Home/PANW"
   "smb://mareox@192.168.10.100/home/MXPC_Home/Documents"
+  "smb://atlas/GIT"
 )
 
 log_info() {
@@ -31,7 +35,7 @@ log_info() {
 }
 
 is_server_reachable() {
-  "$nc_bin" -G 2 -z "$server" 445 >/dev/null 2>&1
+  "$nc_bin" -G 2 -z "${1:-$server}" 445 >/dev/null 2>&1
 }
 
 is_mounted() {
@@ -90,7 +94,7 @@ request_first_missing_mount() {
 
   for (( index = 1; index <= ${#mount_points}; index++ )); do
     mount_point="$mount_points[index]"
-    if ! is_mounted "$mount_point"; then
+    if ! is_mounted "$mount_point" && is_server_reachable "$share_servers[index]"; then
       request_mount "$mount_point" "$share_urls[index]"
       return 0
     fi
@@ -105,7 +109,6 @@ main() {
     return 2
   fi
 
-  is_server_reachable || return 0
   /bin/mkdir -p "$state_dir"
 
   pending_request_allows_retry || return 0
