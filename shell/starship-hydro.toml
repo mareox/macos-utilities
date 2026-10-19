@@ -1,0 +1,28 @@
+scan_timeout = 2000
+command_timeout = 2000
+add_newline = false
+format = """$hostname$directory$git_branch$git_status$cmd_duration$jobs$character"""
+[directory]
+style = "bold blue"
+truncation_length = 3
+[git_branch]
+symbol = ""
+style = "green"
+format = "[$symbol$branch]($style) "
+[git_status]
+style = "red"
+format = "([$all_status$ahead_behind]($style) )"
+[cmd_duration]
+min_time = 2000
+style = "yellow"
+format = "[$duration]($style) "
+[hostname]
+ssh_only = true
+style = "bold green"
+format = "[$hostname]($style) "
+[jobs]
+style = "cyan"
+format = "[$symbol$number]($style) "
+[character]
+success_symbol = "[❱](purple)"
+error_symbol = "[❱](red)"

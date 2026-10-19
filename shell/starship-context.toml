@@ -1,0 +1,40 @@
+scan_timeout = 2000
+command_timeout = 2000
+add_newline = true
+format = "$hostname$directory$git_branch$git_status$cmd_duration$line_break$character"
+
+[hostname]
+ssh_only = false
+format = "[ $hostname](bold #89b4fa)[  ](#585b70)"
+
+[directory]
+format = "[ $path](#cdd6f4)[$read_only](#f38ba8)"
+truncation_length = 3
+truncation_symbol = "…/"
+truncate_to_repo = false
+read_only = " 󰌾"
+
+[git_branch]
+format = " [](#585b70) [ $branch](#a6e3a1)"
+
+[git_status]
+format = "([$all_status$ahead_behind](#f9e2af))"
+modified = " !$count"
+untracked = " ?$count"
+staged = " +$count"
+conflicted = " =$count"
+deleted = " ✘$count"
+renamed = " »$count"
+stashed = " *$count"
+typechanged = " ~$count"
+ahead = " ↑$count"
+behind = " ↓$count"
+diverged = " ↑$ahead_count↓$behind_count"
+
+[cmd_duration]
+min_time = 2000
+format = " [](#585b70) [󰔛 $duration](#cba6f7)"
+
+[character]
+success_symbol = "[❯](#a6e3a1)"
+error_symbol = "[❯](#f38ba8)"
