@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md: mac_auto-mount-drive
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Canonical agent contract. `CLAUDE.md` is an adapter whose first line is `@AGENTS.md`.
 
 ## Project Overview
 
@@ -16,7 +16,7 @@ The system consists of three main components:
 
 1. **mount_smb.sh**: Core mounting script
    - Checks if share is already mounted to avoid duplicate mounts
-   - Supports optional credentials via `~/.smb_credentials` file (username/password)
+   - Supports optional credentials via a `.smb_credentials` file next to the script (`$SCRIPT_DIR/.smb_credentials`; username/password)
    - Falls back to guest mount if credentials file doesn't exist
    - Uses macOS `mount_smbfs` command
 
@@ -85,4 +85,4 @@ password=YOUR_PASSWORD
 
 The mount script reads this file using `grep` and `cut` to extract values (mount_smb.sh:29-30).
 
-**Note**: The README.md suggests creating `~/.smb_credentials`, but the script actually looks for `.smb_credentials` in the script directory. Consider updating either the README or the script for consistency.
+**Note**: README.md and `install.sh` both print instructions to create `~/.smb_credentials` in the home directory, but the script reads `.smb_credentials` from the script directory. Create the file next to the script; those hints are stale.

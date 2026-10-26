@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md: mac_folder-sync-2-smb
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Canonical agent contract. `CLAUDE.md` is an adapter whose first line is `@AGENTS.md`.
 
 ## Project Overview
 
@@ -25,7 +25,7 @@ A cross-platform bash-based folder synchronization tool that performs two-way sy
    - Detects and manages both background processes and system services
 
 **Cross-platform design**:
-- OS detection via `uname -s` sets `$OS` variable (lines 12-18)
+- OS detection: `uname -s` sets `$OS_TYPE`, normalized to `$OS` (linux/macos/unknown) at startup
 - Watch mode branches based on `$OS`:
   - **macOS**: Uses `fswatch` for filesystem monitoring
   - **Linux**: Uses `inotifywait` for filesystem monitoring
@@ -73,118 +73,25 @@ A cross-platform bash-based folder synchronization tool that performs two-way sy
 
 ## Key Commands
 
-### First-time setup
 ```bash
 chmod +x folder-sync.sh control.sh
-./folder-sync.sh --setup
+./folder-sync.sh --setup             # interactive configuration wizard
+./folder-sync.sh --once              # one mutating sync, not a dry run
+./folder-sync.sh --initial-download  # one-time SMB → Local copy, no deletions
+./control.sh status                 # other actions: start, stop, restart, logs
 ```
 
-### Control script (recommended)
-```bash
-./control.sh start          # Start in background
-./control.sh stop           # Stop syncing
-./control.sh restart        # Restart
-./control.sh status         # Show detailed status
-./control.sh logs           # View live logs
-./control.sh install        # Install as system service
-./control.sh uninstall      # Uninstall system service
-```
-
-### Running the script directly
-```bash
-./folder-sync.sh                    # Run with default config (foreground)
-./folder-sync.sh --once             # Single sync (for testing)
-./folder-sync.sh --config <file>    # Use alternate config
-./folder-sync.sh --setup            # Reconfigure settings
-```
-
-### Initial download (first-time setup)
-```bash
-./folder-sync.sh --initial-download # Safely copy all files from SMB → Local (no deletions)
-```
-
-### Testing sync behavior
-```bash
-./folder-sync.sh --once             # Test without continuous monitoring
-./control.sh logs                   # Monitor sync activity
-tail -f ~/.folder-sync.log          # View log file directly
-```
-
-### Configuration
-Edit `sync.conf` directly or regenerate via `--setup`. Required variables:
-- `SOURCE_DIR`: Local directory to sync from
-- `DEST_DIR`: SMB mount point to sync to
-- `SYNC_MODE`: "watch" or "interval"
-- `SYNC_INTERVAL`: Seconds between syncs (interval mode only)
-- `SYNC_DELAY`: Seconds to wait after detecting changes before syncing (watch mode, default: 60)
-- `TRASH_ENABLED`: "yes" or "no" - move deleted files to .trash
-- `TRASH_MAX_AGE_DAYS`: Days to keep trash files before auto-deletion (default: 60)
-- `EXCLUDE_PATTERNS`: Space-separated patterns for rsync --exclude (`.trash` auto-excluded)
+Before changing commands, `sync.conf`, platform dependencies, SMB mounting or
+service installation, read the full reference in [README.md](README.md).
 
 ## Development Notes
 
 **Bash safety**: Script uses `set -euo pipefail` for strict error handling. All functions should handle errors explicitly.
 
-**String interpolation**: Config values are interpolated into rsync command via `eval`. Paths must be quoted properly. The script handles this in `perform_sync()` at lines 75-83.
+**String interpolation**: Config values are interpolated into rsync command via `eval`. Paths must be quoted properly. The script handles this in `perform_sync()`.
 
 **Path expansion**: Interactive setup expands `~` to `$HOME` for user convenience.
 
-**Color output**: Uses ANSI escape codes via helper functions (`print_info`, `print_success`, `print_warning`, `print_error`).
-
-**Logging**: Optional file logging via `log_message()`. Controlled by `LOG_FILE` config variable.
+**Notifications**: Linux uses `notify-send`; macOS desktop notifications are not supported.
 
 **Signal handling**: Trap on INT/TERM for graceful shutdown.
-
-**Platform-specific file watchers**:
-- Linux: `inotifywait -m -r -e modify,create,delete,move` monitors specific events
-- macOS: `fswatch -r -e ".*" -i "\\..*"` monitors all changes recursively
-
-**Auto-install dependencies**: The `check_and_install_dependency()` function:
-- Detects if required tools are installed
-- Prompts user to install if missing
-- Detects appropriate package manager (brew for macOS, apt/dnf/pacman/yum for Linux)
-- Runs installation with user confirmation
-- Called during both interactive setup and when starting watch mode
-
-## Platform-Specific Considerations
-
-**Dependencies**:
-- Linux watch mode: Requires `inotify-tools` package
-- macOS watch mode: Requires `fswatch` (installed via Homebrew)
-- Interval mode: No additional dependencies beyond rsync
-
-**Notifications**:
-- Linux: Uses `notify-send` for desktop notifications
-- macOS: Desktop notifications not currently supported
-
-**SMB mounting**:
-- Linux: Uses `mount -t cifs` with credentials
-- macOS: Uses `mount -t smbfs` or Finder GUI (Cmd+K)
-- Default mount locations:
-  - Linux: `/mnt/` or `/run/user/*/gvfs/`
-  - macOS: `/Volumes/`
-
-**Service management**:
-- Linux: systemd service files
-- macOS: launchd plist files in `~/Library/LaunchAgents/`
-
-## Configuration Defaults
-
-**Sync behavior**:
-- Two-way bidirectional sync (newer file wins)
-- Rsync options: `-avh --ignore-errors --backup --backup-dir`
-- Deleted files moved to `.trash` directories
-- Trash retention: 60 days
-- Sync delay: 60 seconds (watch mode)
-
-**Default excludes**: `.git .DS_Store Thumbs.db` (plus `.trash` auto-excluded)
-
-**Default log location**: `~/.folder-sync.log`
-
-**Trash locations**:
-- `SOURCE_DIR/.trash/` - Files deleted from local
-- `DEST_DIR/.trash/` - Files deleted from SMB
-
-## SMB Considerations
-
-The script assumes the SMB share is already mounted. It validates directory existence but does not handle mounting. Mount validation happens in `perform_sync()` by checking if `DEST_DIR` exists as a directory.

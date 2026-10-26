@@ -10,7 +10,7 @@ macOS-specific automation scripts and utilities (auto-mount, folder sync).
 
 ```bash
 cd macos-utilities && ls              # survey the scripts before running anything
-bash <script>.sh --help      # most scripts are self-documenting
+cat <script>.sh                # read the full script before running it; argument handling varies
 ```
 
 Read the repo README.md for tool-specific usage. Run scripts only after
